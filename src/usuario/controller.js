@@ -61,9 +61,14 @@ const validateLogin = (req, res) => {
             res.status(400).send()
             return
         }
-        usuario = resSql.rows
+
         if(err) res.send(error(err))
-        
+        if(resSql.rows.length === 0) {
+            res.status(400).send({error: "usuario inexistente"})
+            return
+        }
+        usuario = resSql.rows
+ 
         if (!req.session.views) {
             req.session.views = 1;
         } else {
@@ -75,7 +80,8 @@ const validateLogin = (req, res) => {
                 req.session.isAuth = true
                 res.status(200).send()
             }else{
-                res.status(400).send()
+                // res.status(400).send()
+                res.status(400).send({error: "senha incorreta"})
                 return
             }
         })
